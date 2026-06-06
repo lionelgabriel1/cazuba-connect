@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import g1 from "@/assets/g1.jpg";
-import g2 from "@/assets/g2.jpg";
 import g3 from "@/assets/g3.jpg";
 import g4 from "@/assets/g4.jpg";
 
