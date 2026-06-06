@@ -510,4 +510,4 @@ function ChatWidget() {
   );
 }
 
-export { g2 };
+
