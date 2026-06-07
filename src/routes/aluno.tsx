@@ -60,13 +60,13 @@ function Login({ onLogin }: { onLogin: (s: { email: string; name: string }) => v
 
 function Dashboard({ session, onLogout }: { session: { email: string; name: string }; onLogout: () => void }) {
   const loc = useLocation();
-  const tabs = [
+  const tabs: { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
     { to: "/aluno", label: "Resumo", icon: LayoutDashboard, exact: true },
     { to: "/aluno/inscricoes", label: "Inscrições", icon: FileText },
     { to: "/aluno/pagamentos", label: "Pagamentos", icon: CreditCard },
     { to: "/aluno/comprovativos", label: "Comprovativos", icon: Receipt },
     { to: "/aluno/certificados", label: "Certificados", icon: Award },
-  ] as const;
+  ];
 
   return (
     <PageShell
