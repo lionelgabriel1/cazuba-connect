@@ -94,9 +94,14 @@ function Nav() {
             </a>
           ))}
         </nav>
-        <a href="#login" className="hidden md:inline-flex items-center gap-2 rounded-full bg-gold text-gold-foreground px-5 py-2.5 text-sm font-bold hover:brightness-105 transition shadow-[var(--shadow-gold)]">
-          Área do Aluno
-        </a>
+        <div className="hidden md:flex items-center gap-3">
+          <Link to="/inscricao" className="inline-flex items-center gap-2 rounded-full border-2 border-primary text-primary px-5 py-2 text-sm font-bold hover:bg-primary hover:text-primary-foreground transition">
+            Inscrição
+          </Link>
+          <Link to="/aluno" className="inline-flex items-center gap-2 rounded-full bg-gold text-gold-foreground px-5 py-2.5 text-sm font-bold hover:brightness-105 transition shadow-[var(--shadow-gold)]">
+            Área do Aluno
+          </Link>
+        </div>
         <button className="md:hidden p-2 text-primary" onClick={() => setOpen(!open)} aria-label="Menu">
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
