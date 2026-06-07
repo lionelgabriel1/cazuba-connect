@@ -24,9 +24,12 @@ function InscricaoPage() {
   const [docMeta, setDocMeta] = useState<{ name: string; dataUrl: string } | null>(null);
   const [createdId, setCreatedId] = useState<string | null>(null);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    fullName: string; studentEmail: string; phone: string; birthDate: string; address: string;
+    course: string; paymentMethod: "transferencia" | "referencia" | "presencial";
+  }>({
     fullName: "", studentEmail: "", phone: "", birthDate: "", address: "",
-    course: COURSES[0].name, paymentMethod: "transferencia" as const,
+    course: COURSES[0].name, paymentMethod: "transferencia",
   });
   const update = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm(f => ({ ...f, [k]: v }));
 
