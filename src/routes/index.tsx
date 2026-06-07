@@ -110,7 +110,8 @@ function Nav() {
         <div className="md:hidden border-t border-border bg-white">
           <div className="px-5 py-4 flex flex-col gap-3">
             {links.map(l => <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="py-1.5 text-foreground/85 font-medium">{l.label}</a>)}
-            <a href="#login" onClick={() => setOpen(false)} className="mt-2 inline-flex justify-center rounded-full bg-gold text-gold-foreground px-5 py-2.5 text-sm font-bold">Área do Aluno</a>
+            <Link to="/inscricao" onClick={() => setOpen(false)} className="mt-2 inline-flex justify-center rounded-full border-2 border-primary text-primary px-5 py-2 text-sm font-bold">Inscrição</Link>
+            <Link to="/aluno" onClick={() => setOpen(false)} className="inline-flex justify-center rounded-full bg-gold text-gold-foreground px-5 py-2.5 text-sm font-bold">Área do Aluno</Link>
           </div>
         </div>
       )}
