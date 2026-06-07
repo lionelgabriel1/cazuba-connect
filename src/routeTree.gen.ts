@@ -9,38 +9,153 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as InscricaoRouteImport } from './routes/inscricao'
+import { Route as AlunoRouteImport } from './routes/aluno'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AlunoIndexRouteImport } from './routes/aluno.index'
+import { Route as ValidarIdRouteImport } from './routes/validar.$id'
+import { Route as AlunoPagamentosRouteImport } from './routes/aluno.pagamentos'
+import { Route as AlunoInscricoesRouteImport } from './routes/aluno.inscricoes'
+import { Route as AlunoComprovativosRouteImport } from './routes/aluno.comprovativos'
+import { Route as AlunoCertificadosRouteImport } from './routes/aluno.certificados'
 
+const InscricaoRoute = InscricaoRouteImport.update({
+  id: '/inscricao',
+  path: '/inscricao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlunoRoute = AlunoRouteImport.update({
+  id: '/aluno',
+  path: '/aluno',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AlunoIndexRoute = AlunoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AlunoRoute,
+} as any)
+const ValidarIdRoute = ValidarIdRouteImport.update({
+  id: '/validar/$id',
+  path: '/validar/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlunoPagamentosRoute = AlunoPagamentosRouteImport.update({
+  id: '/pagamentos',
+  path: '/pagamentos',
+  getParentRoute: () => AlunoRoute,
+} as any)
+const AlunoInscricoesRoute = AlunoInscricoesRouteImport.update({
+  id: '/inscricoes',
+  path: '/inscricoes',
+  getParentRoute: () => AlunoRoute,
+} as any)
+const AlunoComprovativosRoute = AlunoComprovativosRouteImport.update({
+  id: '/comprovativos',
+  path: '/comprovativos',
+  getParentRoute: () => AlunoRoute,
+} as any)
+const AlunoCertificadosRoute = AlunoCertificadosRouteImport.update({
+  id: '/certificados',
+  path: '/certificados',
+  getParentRoute: () => AlunoRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aluno': typeof AlunoRouteWithChildren
+  '/inscricao': typeof InscricaoRoute
+  '/aluno/certificados': typeof AlunoCertificadosRoute
+  '/aluno/comprovativos': typeof AlunoComprovativosRoute
+  '/aluno/inscricoes': typeof AlunoInscricoesRoute
+  '/aluno/pagamentos': typeof AlunoPagamentosRoute
+  '/validar/$id': typeof ValidarIdRoute
+  '/aluno/': typeof AlunoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/inscricao': typeof InscricaoRoute
+  '/aluno/certificados': typeof AlunoCertificadosRoute
+  '/aluno/comprovativos': typeof AlunoComprovativosRoute
+  '/aluno/inscricoes': typeof AlunoInscricoesRoute
+  '/aluno/pagamentos': typeof AlunoPagamentosRoute
+  '/validar/$id': typeof ValidarIdRoute
+  '/aluno': typeof AlunoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aluno': typeof AlunoRouteWithChildren
+  '/inscricao': typeof InscricaoRoute
+  '/aluno/certificados': typeof AlunoCertificadosRoute
+  '/aluno/comprovativos': typeof AlunoComprovativosRoute
+  '/aluno/inscricoes': typeof AlunoInscricoesRoute
+  '/aluno/pagamentos': typeof AlunoPagamentosRoute
+  '/validar/$id': typeof ValidarIdRoute
+  '/aluno/': typeof AlunoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/aluno'
+    | '/inscricao'
+    | '/aluno/certificados'
+    | '/aluno/comprovativos'
+    | '/aluno/inscricoes'
+    | '/aluno/pagamentos'
+    | '/validar/$id'
+    | '/aluno/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/inscricao'
+    | '/aluno/certificados'
+    | '/aluno/comprovativos'
+    | '/aluno/inscricoes'
+    | '/aluno/pagamentos'
+    | '/validar/$id'
+    | '/aluno'
+  id:
+    | '__root__'
+    | '/'
+    | '/aluno'
+    | '/inscricao'
+    | '/aluno/certificados'
+    | '/aluno/comprovativos'
+    | '/aluno/inscricoes'
+    | '/aluno/pagamentos'
+    | '/validar/$id'
+    | '/aluno/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AlunoRoute: typeof AlunoRouteWithChildren
+  InscricaoRoute: typeof InscricaoRoute
+  ValidarIdRoute: typeof ValidarIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/inscricao': {
+      id: '/inscricao'
+      path: '/inscricao'
+      fullPath: '/inscricao'
+      preLoaderRoute: typeof InscricaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aluno': {
+      id: '/aluno'
+      path: '/aluno'
+      fullPath: '/aluno'
+      preLoaderRoute: typeof AlunoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +163,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/aluno/': {
+      id: '/aluno/'
+      path: '/'
+      fullPath: '/aluno/'
+      preLoaderRoute: typeof AlunoIndexRouteImport
+      parentRoute: typeof AlunoRoute
+    }
+    '/validar/$id': {
+      id: '/validar/$id'
+      path: '/validar/$id'
+      fullPath: '/validar/$id'
+      preLoaderRoute: typeof ValidarIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aluno/pagamentos': {
+      id: '/aluno/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/aluno/pagamentos'
+      preLoaderRoute: typeof AlunoPagamentosRouteImport
+      parentRoute: typeof AlunoRoute
+    }
+    '/aluno/inscricoes': {
+      id: '/aluno/inscricoes'
+      path: '/inscricoes'
+      fullPath: '/aluno/inscricoes'
+      preLoaderRoute: typeof AlunoInscricoesRouteImport
+      parentRoute: typeof AlunoRoute
+    }
+    '/aluno/comprovativos': {
+      id: '/aluno/comprovativos'
+      path: '/comprovativos'
+      fullPath: '/aluno/comprovativos'
+      preLoaderRoute: typeof AlunoComprovativosRouteImport
+      parentRoute: typeof AlunoRoute
+    }
+    '/aluno/certificados': {
+      id: '/aluno/certificados'
+      path: '/certificados'
+      fullPath: '/aluno/certificados'
+      preLoaderRoute: typeof AlunoCertificadosRouteImport
+      parentRoute: typeof AlunoRoute
+    }
   }
 }
 
+interface AlunoRouteChildren {
+  AlunoCertificadosRoute: typeof AlunoCertificadosRoute
+  AlunoComprovativosRoute: typeof AlunoComprovativosRoute
+  AlunoInscricoesRoute: typeof AlunoInscricoesRoute
+  AlunoPagamentosRoute: typeof AlunoPagamentosRoute
+  AlunoIndexRoute: typeof AlunoIndexRoute
+}
+
+const AlunoRouteChildren: AlunoRouteChildren = {
+  AlunoCertificadosRoute: AlunoCertificadosRoute,
+  AlunoComprovativosRoute: AlunoComprovativosRoute,
+  AlunoInscricoesRoute: AlunoInscricoesRoute,
+  AlunoPagamentosRoute: AlunoPagamentosRoute,
+  AlunoIndexRoute: AlunoIndexRoute,
+}
+
+const AlunoRouteWithChildren = AlunoRoute._addFileChildren(AlunoRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AlunoRoute: AlunoRouteWithChildren,
+  InscricaoRoute: InscricaoRoute,
+  ValidarIdRoute: ValidarIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
