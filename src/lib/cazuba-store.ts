@@ -191,6 +191,85 @@ export function issueDemoCertificate(enrollmentId: string): Certificate | null {
   return c;
 }
 
+/* ===================== ADMIN ===================== */
+
+const ADMIN_KEY = "cazuba:admin-session";
+const ADMIN_PASSWORD = "cazuba2026"; // demo — em produção, mover para Lovable Cloud.
+
+export function getAdminSession(): { user: string } | null {
+  if (typeof window === "undefined") return null;
+  try { return JSON.parse(localStorage.getItem(ADMIN_KEY) ?? "null"); } catch { return null; }
+}
+export function adminLogin(password: string): boolean {
+  if (password !== ADMIN_PASSWORD) return false;
+  if (typeof window !== "undefined") localStorage.setItem(ADMIN_KEY, JSON.stringify({ user: "Administrador" }));
+  return true;
+}
+export function adminLogout() {
+  if (typeof window !== "undefined") localStorage.removeItem(ADMIN_KEY);
+}
+
+export function listAllEnrollments(): Enrollment[] { return read<Enrollment>(KEYS.enrollments); }
+export function listAllPayments(): Payment[] { return read<Payment>(KEYS.payments); }
+export function listAllReceipts(): Receipt[] { return read<Receipt>(KEYS.receipts); }
+export function listAllCertificates(): Certificate[] { return read<Certificate>(KEYS.certificates); }
+
+export type Student = { email: string; name: string; phone: string; enrollments: number; lastAt: string };
+export function listStudents(): Student[] {
+  const map = new Map<string, Student>();
+  for (const e of read<Enrollment>(KEYS.enrollments)) {
+    const cur = map.get(e.studentEmail);
+    if (cur) { cur.enrollments += 1; if (e.createdAt > cur.lastAt) cur.lastAt = e.createdAt; }
+    else map.set(e.studentEmail, { email: e.studentEmail, name: e.fullName, phone: e.phone, enrollments: 1, lastAt: e.createdAt });
+  }
+  return Array.from(map.values()).sort((a, b) => b.lastAt.localeCompare(a.lastAt));
+}
+
+export function setDocumentStatus(enrollmentId: string, status: "aprovado" | "rejeitado", note?: string) {
+  const all = read<Enrollment>(KEYS.enrollments);
+  const i = all.findIndex(e => e.id === enrollmentId); if (i === -1) return;
+  all[i] = { ...all[i], documentStatus: status, documentNote: note };
+  write(KEYS.enrollments, all);
+}
+
+/** Confirma pagamento manualmente (presencial ou validação admin) — sem necessidade de upload. */
+export function confirmPaymentManually(paymentId: string, note = "Confirmado pela secretaria") {
+  const payments = read<Payment>(KEYS.payments);
+  const idx = payments.findIndex(p => p.id === paymentId);
+  if (idx === -1) return;
+  payments[idx] = { ...payments[idx], status: "confirmado", proofName: payments[idx].proofName ?? note };
+  write(KEYS.payments, payments);
+
+  const p = payments[idx];
+  const receipts = read<Receipt>(KEYS.receipts);
+  if (!receipts.some(r => r.paymentId === p.id)) {
+    const enrollment = getEnrollment(p.enrollmentId);
+    receipts.unshift({
+      id: uid("CMP"), enrollmentId: p.enrollmentId, paymentId: p.id,
+      studentEmail: p.studentEmail, fullName: enrollment?.fullName ?? "", course: p.course,
+      amount: p.amount, issuedAt: new Date().toISOString(), kind: "pagamento",
+    });
+    write(KEYS.receipts, receipts);
+  }
+  const enrolls = read<Enrollment>(KEYS.enrollments);
+  const ei = enrolls.findIndex(x => x.id === p.enrollmentId);
+  if (ei !== -1 && enrolls[ei].status === "pendente") { enrolls[ei].status = "confirmada"; write(KEYS.enrollments, enrolls); }
+}
+
+/** Reemite comprovativo de inscrição (gera novo Receipt com novo ID). */
+export function reissueEnrollmentReceipt(enrollmentId: string): Receipt | null {
+  const e = getEnrollment(enrollmentId); if (!e) return null;
+  const course = COURSES.find(c => c.name === e.course);
+  const receipts = read<Receipt>(KEYS.receipts);
+  const r: Receipt = {
+    id: uid("CMP"), enrollmentId: e.id, studentEmail: e.studentEmail, fullName: e.fullName,
+    course: e.course, amount: course?.price ?? 0, issuedAt: new Date().toISOString(), kind: "inscricao",
+  };
+  receipts.unshift(r); write(KEYS.receipts, receipts);
+  return r;
+}
+
+
 export function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const r = new FileReader();
