@@ -31,8 +31,9 @@ export function PageShell({ title, subtitle, children, actions }: { title: strin
       </section>
       <main className="mx-auto max-w-7xl px-5 py-10">{children}</main>
       <footer className="border-t border-border bg-white py-6 mt-10 text-center text-xs text-muted-foreground">
-        © 2026 Cazuba Centro de Treinamento — Capacitando talentos, construindo futuros.
+        © 2026 Cazuba Centro de Treinamento — Capacitando talentos, construindo futuros. · <Link to="/admin" className="hover:text-primary hover:underline">Admin</Link>
       </footer>
+
     </div>
   );
 }
