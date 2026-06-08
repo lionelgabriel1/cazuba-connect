@@ -16,9 +16,12 @@ export type Enrollment = {
   paymentMethod: "transferencia" | "referencia" | "presencial";
   documentName?: string;
   documentDataUrl?: string;
+  documentStatus?: "pendente" | "aprovado" | "rejeitado";
+  documentNote?: string;
   status: "pendente" | "confirmada" | "concluida";
   createdAt: string;
 };
+
 
 export type Payment = {
   id: string;
