@@ -3,9 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Award, Search, RotateCw } from "lucide-react";
 import {
   listAllEnrollments, formatDate, formatAOA, COURSES,
-  issueDemoCertificate, reissueEnrollmentReceipt, downloadReceiptPdf,
+  issueDemoCertificate, reissueEnrollmentReceipt, downloadReceiptPdf, downloadCertificatePdf,
   type Enrollment,
 } from "@/lib/cazuba-store";
+
 
 export const Route = createFileRoute("/admin/inscricoes")({ component: AdminInscricoes });
 
@@ -23,8 +24,9 @@ function AdminInscricoes() {
 
   async function emitirCert(e: Enrollment) {
     const c = issueDemoCertificate(e.id);
-    if (c) { const { downloadCertificatePdf } = await import("@/lib/cazuba-store"); await downloadCertificatePdf(c); refresh(); }
+    if (c) { await downloadCertificatePdf(c); refresh(); }
   }
+
   async function reenviarComp(e: Enrollment) {
     const r = reissueEnrollmentReceipt(e.id); if (r) await downloadReceiptPdf(r);
   }
