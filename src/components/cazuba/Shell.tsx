@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { tenant } from "@/config/tenant";
 
 export function PageShell({ title, subtitle, children, actions }: { title: string; subtitle?: string; children: ReactNode; actions?: ReactNode }) {
   return (
@@ -7,9 +8,9 @@ export function PageShell({ title, subtitle, children, actions }: { title: strin
       <header className="bg-white border-b border-border shadow-sm">
         <div className="mx-auto max-w-7xl px-5 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="size-10 rounded-full bg-primary text-gold grid place-items-center font-display font-extrabold border-2 border-gold">C</div>
+            <div className="size-10 rounded-full bg-primary text-gold grid place-items-center font-display font-extrabold border-2 border-gold">{tenant.shortName[0]}</div>
             <div className="leading-tight">
-              <div className="font-display font-extrabold text-primary text-base tracking-tight">CAZUBA</div>
+              <div className="font-display font-extrabold text-primary text-base tracking-tight">{tenant.shortName}</div>
               <div className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground font-semibold">Centro de Treinamento</div>
             </div>
           </Link>
@@ -31,9 +32,8 @@ export function PageShell({ title, subtitle, children, actions }: { title: strin
       </section>
       <main className="mx-auto max-w-7xl px-5 py-10">{children}</main>
       <footer className="border-t border-border bg-white py-6 mt-10 text-center text-xs text-muted-foreground">
-        © 2026 Cazuba Centro de Treinamento — Capacitando talentos, construindo futuros. · <Link to="/admin" className="hover:text-primary hover:underline">Admin</Link>
+        © 2026 {tenant.name} — {tenant.tagline}
       </footer>
-
     </div>
   );
 }

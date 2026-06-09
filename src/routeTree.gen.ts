@@ -9,22 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as InscricaoRouteImport } from './routes/inscricao'
+import { Route as AlunoRouteImport } from './routes/aluno'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AlunoIndexRouteImport } from './routes/aluno.index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ValidarIdRouteImport } from './routes/validar.$id'
-import { Route as AlunoPagamentosRouteImport } from './routes/aluno.pagamentos'
-import { Route as AlunoInscricoesRouteImport } from './routes/aluno.inscricoes'
-import { Route as AlunoComprovativosRouteImport } from './routes/aluno.comprovativos'
-import { Route as AlunoCertificadosRouteImport } from './routes/aluno.certificados'
-import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
-import { Route as AdminInscricoesRouteImport } from './routes/admin.inscricoes'
-import { Route as AdminDocumentosRouteImport } from './routes/admin.documentos'
-import { Route as AdminComprovativosRouteImport } from './routes/admin.comprovativos'
-import { Route as AdminCertificadosRouteImport } from './routes/admin.certificados'
-import { Route as AdminAlunosRouteImport } from './routes/admin.alunos'
 
+const InscricaoRoute = InscricaoRouteImport.update({
+  id: '/inscricao',
+  path: '/inscricao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlunoRoute = AlunoRouteImport.update({
+  id: '/aluno',
+  path: '/aluno',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -35,189 +35,66 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AlunoIndexRoute = AlunoIndexRouteImport.update({
-  id: '/aluno/',
-  path: '/aluno/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
 const ValidarIdRoute = ValidarIdRouteImport.update({
   id: '/validar/$id',
   path: '/validar/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AlunoPagamentosRoute = AlunoPagamentosRouteImport.update({
-  id: '/aluno/pagamentos',
-  path: '/aluno/pagamentos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AlunoInscricoesRoute = AlunoInscricoesRouteImport.update({
-  id: '/aluno/inscricoes',
-  path: '/aluno/inscricoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AlunoComprovativosRoute = AlunoComprovativosRouteImport.update({
-  id: '/aluno/comprovativos',
-  path: '/aluno/comprovativos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AlunoCertificadosRoute = AlunoCertificadosRouteImport.update({
-  id: '/aluno/certificados',
-  path: '/aluno/certificados',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminPagamentosRoute = AdminPagamentosRouteImport.update({
-  id: '/pagamentos',
-  path: '/pagamentos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminInscricoesRoute = AdminInscricoesRouteImport.update({
-  id: '/inscricoes',
-  path: '/inscricoes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDocumentosRoute = AdminDocumentosRouteImport.update({
-  id: '/documentos',
-  path: '/documentos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminComprovativosRoute = AdminComprovativosRouteImport.update({
-  id: '/comprovativos',
-  path: '/comprovativos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCertificadosRoute = AdminCertificadosRouteImport.update({
-  id: '/certificados',
-  path: '/certificados',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAlunosRoute = AdminAlunosRouteImport.update({
-  id: '/alunos',
-  path: '/alunos',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admin/alunos': typeof AdminAlunosRoute
-  '/admin/certificados': typeof AdminCertificadosRoute
-  '/admin/comprovativos': typeof AdminComprovativosRoute
-  '/admin/documentos': typeof AdminDocumentosRoute
-  '/admin/inscricoes': typeof AdminInscricoesRoute
-  '/admin/pagamentos': typeof AdminPagamentosRoute
-  '/aluno/certificados': typeof AlunoCertificadosRoute
-  '/aluno/comprovativos': typeof AlunoComprovativosRoute
-  '/aluno/inscricoes': typeof AlunoInscricoesRoute
-  '/aluno/pagamentos': typeof AlunoPagamentosRoute
+  '/admin': typeof AdminRoute
+  '/aluno': typeof AlunoRoute
+  '/inscricao': typeof InscricaoRoute
   '/validar/$id': typeof ValidarIdRoute
-  '/admin/': typeof AdminIndexRoute
-  '/aluno/': typeof AlunoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin/alunos': typeof AdminAlunosRoute
-  '/admin/certificados': typeof AdminCertificadosRoute
-  '/admin/comprovativos': typeof AdminComprovativosRoute
-  '/admin/documentos': typeof AdminDocumentosRoute
-  '/admin/inscricoes': typeof AdminInscricoesRoute
-  '/admin/pagamentos': typeof AdminPagamentosRoute
-  '/aluno/certificados': typeof AlunoCertificadosRoute
-  '/aluno/comprovativos': typeof AlunoComprovativosRoute
-  '/aluno/inscricoes': typeof AlunoInscricoesRoute
-  '/aluno/pagamentos': typeof AlunoPagamentosRoute
+  '/admin': typeof AdminRoute
+  '/aluno': typeof AlunoRoute
+  '/inscricao': typeof InscricaoRoute
   '/validar/$id': typeof ValidarIdRoute
-  '/admin': typeof AdminIndexRoute
-  '/aluno': typeof AlunoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admin/alunos': typeof AdminAlunosRoute
-  '/admin/certificados': typeof AdminCertificadosRoute
-  '/admin/comprovativos': typeof AdminComprovativosRoute
-  '/admin/documentos': typeof AdminDocumentosRoute
-  '/admin/inscricoes': typeof AdminInscricoesRoute
-  '/admin/pagamentos': typeof AdminPagamentosRoute
-  '/aluno/certificados': typeof AlunoCertificadosRoute
-  '/aluno/comprovativos': typeof AlunoComprovativosRoute
-  '/aluno/inscricoes': typeof AlunoInscricoesRoute
-  '/aluno/pagamentos': typeof AlunoPagamentosRoute
+  '/admin': typeof AdminRoute
+  '/aluno': typeof AlunoRoute
+  '/inscricao': typeof InscricaoRoute
   '/validar/$id': typeof ValidarIdRoute
-  '/admin/': typeof AdminIndexRoute
-  '/aluno/': typeof AlunoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/admin'
-    | '/admin/alunos'
-    | '/admin/certificados'
-    | '/admin/comprovativos'
-    | '/admin/documentos'
-    | '/admin/inscricoes'
-    | '/admin/pagamentos'
-    | '/aluno/certificados'
-    | '/aluno/comprovativos'
-    | '/aluno/inscricoes'
-    | '/aluno/pagamentos'
-    | '/validar/$id'
-    | '/admin/'
-    | '/aluno/'
+  fullPaths: '/' | '/admin' | '/aluno' | '/inscricao' | '/validar/$id'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/admin/alunos'
-    | '/admin/certificados'
-    | '/admin/comprovativos'
-    | '/admin/documentos'
-    | '/admin/inscricoes'
-    | '/admin/pagamentos'
-    | '/aluno/certificados'
-    | '/aluno/comprovativos'
-    | '/aluno/inscricoes'
-    | '/aluno/pagamentos'
-    | '/validar/$id'
-    | '/admin'
-    | '/aluno'
-  id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/admin/alunos'
-    | '/admin/certificados'
-    | '/admin/comprovativos'
-    | '/admin/documentos'
-    | '/admin/inscricoes'
-    | '/admin/pagamentos'
-    | '/aluno/certificados'
-    | '/aluno/comprovativos'
-    | '/aluno/inscricoes'
-    | '/aluno/pagamentos'
-    | '/validar/$id'
-    | '/admin/'
-    | '/aluno/'
+  to: '/' | '/admin' | '/aluno' | '/inscricao' | '/validar/$id'
+  id: '__root__' | '/' | '/admin' | '/aluno' | '/inscricao' | '/validar/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  AlunoCertificadosRoute: typeof AlunoCertificadosRoute
-  AlunoComprovativosRoute: typeof AlunoComprovativosRoute
-  AlunoInscricoesRoute: typeof AlunoInscricoesRoute
-  AlunoPagamentosRoute: typeof AlunoPagamentosRoute
+  AdminRoute: typeof AdminRoute
+  AlunoRoute: typeof AlunoRoute
+  InscricaoRoute: typeof InscricaoRoute
   ValidarIdRoute: typeof ValidarIdRoute
-  AlunoIndexRoute: typeof AlunoIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/inscricao': {
+      id: '/inscricao'
+      path: '/inscricao'
+      fullPath: '/inscricao'
+      preLoaderRoute: typeof InscricaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aluno': {
+      id: '/aluno'
+      path: '/aluno'
+      fullPath: '/aluno'
+      preLoaderRoute: typeof AlunoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -232,20 +109,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aluno/': {
-      id: '/aluno/'
-      path: '/aluno'
-      fullPath: '/aluno/'
-      preLoaderRoute: typeof AlunoIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/validar/$id': {
       id: '/validar/$id'
       path: '/validar/$id'
@@ -253,121 +116,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ValidarIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aluno/pagamentos': {
-      id: '/aluno/pagamentos'
-      path: '/aluno/pagamentos'
-      fullPath: '/aluno/pagamentos'
-      preLoaderRoute: typeof AlunoPagamentosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aluno/inscricoes': {
-      id: '/aluno/inscricoes'
-      path: '/aluno/inscricoes'
-      fullPath: '/aluno/inscricoes'
-      preLoaderRoute: typeof AlunoInscricoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aluno/comprovativos': {
-      id: '/aluno/comprovativos'
-      path: '/aluno/comprovativos'
-      fullPath: '/aluno/comprovativos'
-      preLoaderRoute: typeof AlunoComprovativosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aluno/certificados': {
-      id: '/aluno/certificados'
-      path: '/aluno/certificados'
-      fullPath: '/aluno/certificados'
-      preLoaderRoute: typeof AlunoCertificadosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/pagamentos': {
-      id: '/admin/pagamentos'
-      path: '/pagamentos'
-      fullPath: '/admin/pagamentos'
-      preLoaderRoute: typeof AdminPagamentosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/inscricoes': {
-      id: '/admin/inscricoes'
-      path: '/inscricoes'
-      fullPath: '/admin/inscricoes'
-      preLoaderRoute: typeof AdminInscricoesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/documentos': {
-      id: '/admin/documentos'
-      path: '/documentos'
-      fullPath: '/admin/documentos'
-      preLoaderRoute: typeof AdminDocumentosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/comprovativos': {
-      id: '/admin/comprovativos'
-      path: '/comprovativos'
-      fullPath: '/admin/comprovativos'
-      preLoaderRoute: typeof AdminComprovativosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/certificados': {
-      id: '/admin/certificados'
-      path: '/certificados'
-      fullPath: '/admin/certificados'
-      preLoaderRoute: typeof AdminCertificadosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/alunos': {
-      id: '/admin/alunos'
-      path: '/alunos'
-      fullPath: '/admin/alunos'
-      preLoaderRoute: typeof AdminAlunosRouteImport
-      parentRoute: typeof AdminRoute
-    }
   }
 }
 
-interface AdminRouteChildren {
-  AdminAlunosRoute: typeof AdminAlunosRoute
-  AdminCertificadosRoute: typeof AdminCertificadosRoute
-  AdminComprovativosRoute: typeof AdminComprovativosRoute
-  AdminDocumentosRoute: typeof AdminDocumentosRoute
-  AdminInscricoesRoute: typeof AdminInscricoesRoute
-  AdminPagamentosRoute: typeof AdminPagamentosRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminAlunosRoute: AdminAlunosRoute,
-  AdminCertificadosRoute: AdminCertificadosRoute,
-  AdminComprovativosRoute: AdminComprovativosRoute,
-  AdminDocumentosRoute: AdminDocumentosRoute,
-  AdminInscricoesRoute: AdminInscricoesRoute,
-  AdminPagamentosRoute: AdminPagamentosRoute,
-  AdminIndexRoute: AdminIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
-  AlunoCertificadosRoute: AlunoCertificadosRoute,
-  AlunoComprovativosRoute: AlunoComprovativosRoute,
-  AlunoInscricoesRoute: AlunoInscricoesRoute,
-  AlunoPagamentosRoute: AlunoPagamentosRoute,
+  AdminRoute: AdminRoute,
+  AlunoRoute: AlunoRoute,
+  InscricaoRoute: InscricaoRoute,
   ValidarIdRoute: ValidarIdRoute,
-  AlunoIndexRoute: AlunoIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
