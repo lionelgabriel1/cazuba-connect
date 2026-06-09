@@ -9,8 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as InscricaoRouteImport } from './routes/inscricao'
-import { Route as AlunoRouteImport } from './routes/aluno'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AlunoIndexRouteImport } from './routes/aluno.index'
@@ -27,16 +25,6 @@ import { Route as AdminComprovativosRouteImport } from './routes/admin.comprovat
 import { Route as AdminCertificadosRouteImport } from './routes/admin.certificados'
 import { Route as AdminAlunosRouteImport } from './routes/admin.alunos'
 
-const InscricaoRoute = InscricaoRouteImport.update({
-  id: '/inscricao',
-  path: '/inscricao',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AlunoRoute = AlunoRouteImport.update({
-  id: '/aluno',
-  path: '/aluno',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -48,9 +36,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AlunoIndexRoute = AlunoIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AlunoRoute,
+  id: '/aluno/',
+  path: '/aluno/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -63,24 +51,24 @@ const ValidarIdRoute = ValidarIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AlunoPagamentosRoute = AlunoPagamentosRouteImport.update({
-  id: '/pagamentos',
-  path: '/pagamentos',
-  getParentRoute: () => AlunoRoute,
+  id: '/aluno/pagamentos',
+  path: '/aluno/pagamentos',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AlunoInscricoesRoute = AlunoInscricoesRouteImport.update({
-  id: '/inscricoes',
-  path: '/inscricoes',
-  getParentRoute: () => AlunoRoute,
+  id: '/aluno/inscricoes',
+  path: '/aluno/inscricoes',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AlunoComprovativosRoute = AlunoComprovativosRouteImport.update({
-  id: '/comprovativos',
-  path: '/comprovativos',
-  getParentRoute: () => AlunoRoute,
+  id: '/aluno/comprovativos',
+  path: '/aluno/comprovativos',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AlunoCertificadosRoute = AlunoCertificadosRouteImport.update({
-  id: '/certificados',
-  path: '/certificados',
-  getParentRoute: () => AlunoRoute,
+  id: '/aluno/certificados',
+  path: '/aluno/certificados',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminPagamentosRoute = AdminPagamentosRouteImport.update({
   id: '/pagamentos',
@@ -116,8 +104,6 @@ const AdminAlunosRoute = AdminAlunosRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/aluno': typeof AlunoRouteWithChildren
-  '/inscricao': typeof InscricaoRoute
   '/admin/alunos': typeof AdminAlunosRoute
   '/admin/certificados': typeof AdminCertificadosRoute
   '/admin/comprovativos': typeof AdminComprovativosRoute
@@ -134,7 +120,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/inscricao': typeof InscricaoRoute
   '/admin/alunos': typeof AdminAlunosRoute
   '/admin/certificados': typeof AdminCertificadosRoute
   '/admin/comprovativos': typeof AdminComprovativosRoute
@@ -153,8 +138,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/aluno': typeof AlunoRouteWithChildren
-  '/inscricao': typeof InscricaoRoute
   '/admin/alunos': typeof AdminAlunosRoute
   '/admin/certificados': typeof AdminCertificadosRoute
   '/admin/comprovativos': typeof AdminComprovativosRoute
@@ -174,8 +157,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/aluno'
-    | '/inscricao'
     | '/admin/alunos'
     | '/admin/certificados'
     | '/admin/comprovativos'
@@ -192,7 +173,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/inscricao'
     | '/admin/alunos'
     | '/admin/certificados'
     | '/admin/comprovativos'
@@ -210,8 +190,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
-    | '/aluno'
-    | '/inscricao'
     | '/admin/alunos'
     | '/admin/certificados'
     | '/admin/comprovativos'
@@ -230,27 +208,16 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AlunoRoute: typeof AlunoRouteWithChildren
-  InscricaoRoute: typeof InscricaoRoute
+  AlunoCertificadosRoute: typeof AlunoCertificadosRoute
+  AlunoComprovativosRoute: typeof AlunoComprovativosRoute
+  AlunoInscricoesRoute: typeof AlunoInscricoesRoute
+  AlunoPagamentosRoute: typeof AlunoPagamentosRoute
   ValidarIdRoute: typeof ValidarIdRoute
+  AlunoIndexRoute: typeof AlunoIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/inscricao': {
-      id: '/inscricao'
-      path: '/inscricao'
-      fullPath: '/inscricao'
-      preLoaderRoute: typeof InscricaoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aluno': {
-      id: '/aluno'
-      path: '/aluno'
-      fullPath: '/aluno'
-      preLoaderRoute: typeof AlunoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -267,10 +234,10 @@ declare module '@tanstack/react-router' {
     }
     '/aluno/': {
       id: '/aluno/'
-      path: '/'
+      path: '/aluno'
       fullPath: '/aluno/'
       preLoaderRoute: typeof AlunoIndexRouteImport
-      parentRoute: typeof AlunoRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
@@ -288,31 +255,31 @@ declare module '@tanstack/react-router' {
     }
     '/aluno/pagamentos': {
       id: '/aluno/pagamentos'
-      path: '/pagamentos'
+      path: '/aluno/pagamentos'
       fullPath: '/aluno/pagamentos'
       preLoaderRoute: typeof AlunoPagamentosRouteImport
-      parentRoute: typeof AlunoRoute
+      parentRoute: typeof rootRouteImport
     }
     '/aluno/inscricoes': {
       id: '/aluno/inscricoes'
-      path: '/inscricoes'
+      path: '/aluno/inscricoes'
       fullPath: '/aluno/inscricoes'
       preLoaderRoute: typeof AlunoInscricoesRouteImport
-      parentRoute: typeof AlunoRoute
+      parentRoute: typeof rootRouteImport
     }
     '/aluno/comprovativos': {
       id: '/aluno/comprovativos'
-      path: '/comprovativos'
+      path: '/aluno/comprovativos'
       fullPath: '/aluno/comprovativos'
       preLoaderRoute: typeof AlunoComprovativosRouteImport
-      parentRoute: typeof AlunoRoute
+      parentRoute: typeof rootRouteImport
     }
     '/aluno/certificados': {
       id: '/aluno/certificados'
-      path: '/certificados'
+      path: '/aluno/certificados'
       fullPath: '/aluno/certificados'
       preLoaderRoute: typeof AlunoCertificadosRouteImport
-      parentRoute: typeof AlunoRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/pagamentos': {
       id: '/admin/pagamentos'
@@ -381,31 +348,26 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface AlunoRouteChildren {
-  AlunoCertificadosRoute: typeof AlunoCertificadosRoute
-  AlunoComprovativosRoute: typeof AlunoComprovativosRoute
-  AlunoInscricoesRoute: typeof AlunoInscricoesRoute
-  AlunoPagamentosRoute: typeof AlunoPagamentosRoute
-  AlunoIndexRoute: typeof AlunoIndexRoute
-}
-
-const AlunoRouteChildren: AlunoRouteChildren = {
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AlunoCertificadosRoute: AlunoCertificadosRoute,
   AlunoComprovativosRoute: AlunoComprovativosRoute,
   AlunoInscricoesRoute: AlunoInscricoesRoute,
   AlunoPagamentosRoute: AlunoPagamentosRoute,
-  AlunoIndexRoute: AlunoIndexRoute,
-}
-
-const AlunoRouteWithChildren = AlunoRoute._addFileChildren(AlunoRouteChildren)
-
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
-  AlunoRoute: AlunoRouteWithChildren,
-  InscricaoRoute: InscricaoRoute,
   ValidarIdRoute: ValidarIdRoute,
+  AlunoIndexRoute: AlunoIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
