@@ -5,6 +5,7 @@ import { Eye, EyeOff, Copy, CheckCircle2, Download } from "lucide-react";
 import { PageShell } from "@/components/cazuba/Shell";
 import { tenant } from "@/config/tenant";
 import { COURSES, createEnrollment, downloadReceiptPdf, formatAOA, type Receipt } from "@/lib/supabase";
+import { toastError } from "@/lib/errors";
 
 export const Route = createFileRoute("/inscricao")({
   head: () => ({ meta: [{ title: `Inscrição — ${tenant.name}` }] }),
@@ -42,8 +43,8 @@ function Inscricao() {
       });
       setDone({ studentCode, receipt });
       toast.success("Inscrição registada com sucesso!");
-    } catch (e: any) {
-      toast.error(e.message ?? "Erro ao registar inscrição");
+    } catch (e) {
+      toastError(e, "Erro ao registar inscrição");
     } finally { setLoading(false); }
   }
 

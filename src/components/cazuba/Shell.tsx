@@ -1,8 +1,33 @@
-import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState, type ReactNode } from "react";
+import { LogOut } from "lucide-react";
+import { toast } from "sonner";
 import { tenant } from "@/config/tenant";
+import { supabase, logout } from "@/lib/supabase";
+import { toastError } from "@/lib/errors";
 
 export function PageShell({ title, subtitle, children, actions }: { title: string; subtitle?: string; children: ReactNode; actions?: ReactNode }) {
+  const nav = useNavigate();
+  const [hasSession, setHasSession] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setHasSession(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setHasSession(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function handleLogout() {
+    setSigningOut(true);
+    try {
+      await logout();
+      toast.success("Sessão terminada");
+      nav({ to: "/" });
+    } catch (e) {
+      toastError(e, "Erro a terminar sessão");
+    } finally { setSigningOut(false); }
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F5F5]">
       <header className="bg-white border-b border-border shadow-sm">
@@ -16,8 +41,15 @@ export function PageShell({ title, subtitle, children, actions }: { title: strin
           </Link>
           <nav className="flex items-center gap-2 text-sm font-semibold">
             <Link to="/" className="px-3 py-2 text-primary hover:underline">Início</Link>
-            <Link to="/inscricao" className="px-3 py-2 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition">Inscrever-se</Link>
+            {!hasSession && (
+              <Link to="/inscricao" className="px-3 py-2 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition">Inscrever-se</Link>
+            )}
             <Link to="/aluno" className="px-3 py-2 rounded-full bg-gold text-gold-foreground font-bold hover:brightness-105">Área do Aluno</Link>
+            {hasSession && (
+              <button onClick={handleLogout} disabled={signingOut} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-border text-foreground/70 hover:bg-muted disabled:opacity-50">
+                <LogOut size={14} /> {signingOut ? "A sair..." : "Sair"}
+              </button>
+            )}
           </nav>
         </div>
       </header>
