@@ -121,8 +121,8 @@ export async function registerStudent(opts: {
   birthDate: string;
   address: string;
 }) {
-  // Email interno invisível para o aluno
-  const internalEmail = `${opts.studentCode.toLowerCase()}@cazuba.internal`;
+  // Email interno invisível para o aluno (precisa de TLD válido p/ Supabase Auth)
+  const internalEmail = `${opts.studentCode.toLowerCase()}@cazuba.ao`;
 
   const { data, error } = await supabase.auth.signUp({
     email: internalEmail,
@@ -160,7 +160,7 @@ export async function registerStudent(opts: {
  * Reconstrói o email interno e chama signInWithPassword.
  */
 export async function loginStudent(studentCode: string, password: string) {
-  const internalEmail = `${studentCode.trim().toLowerCase()}@cazuba.internal`;
+  const internalEmail = `${studentCode.trim().toLowerCase()}@cazuba.ao`;
   const { data, error } = await supabase.auth.signInWithPassword({
     email: internalEmail,
     password,

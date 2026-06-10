@@ -138,9 +138,9 @@ function Hero() {
           <a href="#cursos" className="inline-flex items-center justify-center rounded-full bg-primary/70 border-2 border-gold text-white px-8 py-3.5 text-sm md:text-base font-bold tracking-wide hover:bg-gold hover:text-gold-foreground transition shadow-[var(--shadow-gold)]">
             CONHEÇA NOSSOS CURSOS
           </a>
-          <a href="#contacto" className="text-sm text-white/90 underline-offset-4 hover:underline">
-            Inscreva-se Agora
-          </a>
+          <Link to="/inscricao" className="inline-flex items-center justify-center rounded-full bg-gold text-gold-foreground px-8 py-3 text-sm md:text-base font-extrabold tracking-wide hover:brightness-105 transition">
+            INSCREVA-SE AGORA
+          </Link>
         </div>
       </div>
     </section>
@@ -242,9 +242,9 @@ function Courses() {
             <h3 className="mt-4 font-display font-extrabold text-lg text-foreground">{c.name}</h3>
             <p className="text-xs font-bold text-primary mt-1">Duração: {c.duration}</p>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
-            <a href="#contacto" className="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-gold text-gold-foreground px-4 py-2.5 text-xs font-extrabold tracking-wide hover:brightness-105 transition">
+            <Link to="/inscricao" className="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-gold text-gold-foreground px-4 py-2.5 text-xs font-extrabold tracking-wide hover:brightness-105 transition">
               Saiba Mais & Inscrição
-            </a>
+            </Link>
           </article>
         ))}
       </div>
