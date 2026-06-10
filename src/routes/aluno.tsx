@@ -12,6 +12,7 @@ import {
   downloadReceiptPdf, downloadCertificatePdf, formatAOA, formatDate, COURSES,
   type Profile, type Enrollment, type Payment, type Receipt as RReceipt, type Certificate,
 } from "@/lib/supabase";
+import { toastError } from "@/lib/errors";
 
 export const Route = createFileRoute("/aluno")({
   head: () => ({ meta: [{ title: `Área do Aluno — ${tenant.name}` }, { name: "robots", content: "noindex, nofollow" }] }),
@@ -43,13 +44,14 @@ function LoginCard({ onSuccess }: { onSuccess: () => void }) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     try {
       await loginStudent(code.toUpperCase(), pwd);
       toast.success("Bem-vindo!");
       onSuccess();
-    } catch {
-      toast.error("Código de aluno ou password incorretos");
+    } catch (err) {
+      toastError(err, "Código de aluno ou password incorretos");
     } finally { setLoading(false); }
   }
 
@@ -103,7 +105,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         getProfile(), listMyEnrollments(), listMyPayments(), listMyReceipts(), listMyCertificates(),
       ]);
       setProfile(p); setEnrollments(e); setPayments(py); setReceipts(r); setCerts(c);
-    } catch (err: any) { toast.error(err.message ?? "Erro a carregar dados"); }
+    } catch (err) { toastError(err, "Erro a carregar dados"); }
     finally { setLoading(false); }
   }
 
@@ -311,30 +313,36 @@ function StatusBadge({ value }: { value: string }) {
 
 /* ───────── TAB: PAGAMENTOS ───────── */
 function Pagamentos({ payments, reload }: { payments: Payment[]; reload: () => void }) {
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
   async function uploadProof(p: Payment, file: File) {
+    setUploadingId(p.id);
     try { await submitPaymentProof(p.id, file); toast.success("Comprovativo enviado"); reload(); }
-    catch (e: any) { toast.error(e.message ?? "Erro"); }
+    catch (e) { toastError(e, "Erro ao enviar comprovativo"); }
+    finally { setUploadingId(null); }
   }
   return (
     <div className="space-y-3">
-      {payments.map(p => (
-        <div key={p.id} className="bg-white rounded-xl border border-border p-4 flex flex-wrap items-center gap-4 justify-between">
-          <div>
-            <div className="font-bold text-foreground">{p.course}</div>
-            <div className="text-xs text-muted-foreground">{p.method} · {formatDate(p.created_at)}</div>
+      {payments.map(p => {
+        const busy = uploadingId === p.id;
+        return (
+          <div key={p.id} className="bg-white rounded-xl border border-border p-4 flex flex-wrap items-center gap-4 justify-between">
+            <div>
+              <div className="font-bold text-foreground">{p.course}</div>
+              <div className="text-xs text-muted-foreground">{p.method} · {formatDate(p.created_at)}</div>
+            </div>
+            <div className="text-right">
+              <div className="font-extrabold text-primary">{formatAOA(Number(p.amount))}</div>
+              <StatusBadge value={p.status} />
+            </div>
+            {p.status === "aguardando" && (
+              <label className={`inline-flex items-center gap-2 px-4 h-10 rounded-full border-2 border-primary text-primary font-semibold cursor-pointer hover:bg-primary/5 ${busy ? "opacity-50 pointer-events-none" : ""}`}>
+                <Upload size={14} /> {busy ? "A enviar..." : "Enviar comprovativo"}
+                <input type="file" accept="image/*,.pdf" hidden disabled={busy} onChange={e => { const f = e.target.files?.[0]; if (f) void uploadProof(p, f); }} />
+              </label>
+            )}
           </div>
-          <div className="text-right">
-            <div className="font-extrabold text-primary">{formatAOA(Number(p.amount))}</div>
-            <StatusBadge value={p.status} />
-          </div>
-          {p.status === "aguardando" && (
-            <label className="inline-flex items-center gap-2 px-4 h-10 rounded-full border-2 border-primary text-primary font-semibold cursor-pointer hover:bg-primary/5">
-              <Upload size={14} /> Enviar comprovativo
-              <input type="file" accept="image/*,.pdf" hidden onChange={e => { const f = e.target.files?.[0]; if (f) void uploadProof(p, f); }} />
-            </label>
-          )}
-        </div>
-      ))}
+        );
+      })}
       {payments.length === 0 && <div className="p-8 text-center text-muted-foreground bg-white rounded-xl border border-border">Sem pagamentos.</div>}
     </div>
   );

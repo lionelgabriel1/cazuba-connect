@@ -14,6 +14,7 @@ import {
   downloadCertificatePdf, formatAOA, formatDate,
   type Enrollment, type Payment, type Receipt as RReceipt, type Certificate,
 } from "@/lib/supabase";
+import { toastError } from "@/lib/errors";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: `Admin — ${tenant.name}` }, { name: "robots", content: "noindex, nofollow" }] }),
@@ -46,9 +47,10 @@ function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     try { await loginAdmin(email, pwd); toast.success("Bem-vindo, Admin"); onSuccess(); }
-    catch (err: any) { toast.error(err.message ?? "Sem permissões de administrador"); }
+    catch (err) { toastError(err, "Sem permissões de administrador"); }
     finally { setLoading(false); }
   }
 
@@ -93,7 +95,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
     try {
       const [e, p, r, c] = await Promise.all([adminListEnrollments(), adminListPayments(), adminListReceipts(), adminListCertificates()]);
       setEnrollments(e); setPayments(p); setReceipts(r); setCerts(c);
-    } catch (err: any) { toast.error(err.message ?? "Erro a carregar"); }
+    } catch (err) { toastError(err, "Erro a carregar"); }
     finally { setLoading(false); }
   }
   useEffect(() => { void load(); }, []);
@@ -356,9 +358,12 @@ function Badge({ value }: { value: string }) {
 
 /* ───────── PAGAMENTOS ───────── */
 function Pagamentos({ payments, reload }: { payments: Payment[]; reload: () => void }) {
+  const [busyId, setBusyId] = useState<string | null>(null);
   async function confirm(p: Payment) {
+    setBusyId(p.id);
     try { await adminConfirmPayment(p.id); toast.success("Pagamento confirmado"); reload(); }
-    catch (e: any) { toast.error(e.message); }
+    catch (e) { toastError(e, "Erro a confirmar pagamento"); }
+    finally { setBusyId(null); }
   }
   return (
     <div className="bg-white rounded-xl border border-border overflow-hidden">
@@ -374,7 +379,7 @@ function Pagamentos({ payments, reload }: { payments: Payment[]; reload: () => v
               <td className="p-3">{p.method}</td>
               <td className="p-3 text-muted-foreground">{formatDate(p.created_at)}</td>
               <td className="p-3"><Badge value={p.status} /></td>
-              <td className="p-3">{p.status === "aguardando" && <button onClick={() => confirm(p)} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700"><Check size={12} /> Confirmar</button>}</td>
+              <td className="p-3">{p.status === "aguardando" && <button onClick={() => confirm(p)} disabled={busyId === p.id} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 disabled:opacity-50"><Check size={12} /> {busyId === p.id ? "A confirmar..." : "Confirmar"}</button>}</td>
             </tr>
           ))}
           {payments.length === 0 && <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">Sem pagamentos.</td></tr>}
@@ -387,14 +392,20 @@ function Pagamentos({ payments, reload }: { payments: Payment[]; reload: () => v
 /* ───────── DOCUMENTOS ───────── */
 function Documentos({ enrollments, reload }: { enrollments: Enrollment[]; reload: () => void }) {
   const rows = enrollments.filter(e => e.document_url);
+  const [busyId, setBusyId] = useState<string | null>(null);
   async function decide(e: Enrollment, status: "aprovado" | "rejeitado") {
     const note = status === "rejeitado" ? (window.prompt("Motivo (opcional):") ?? undefined) : undefined;
+    setBusyId(e.id);
     try { await adminSetDocumentStatus(e.id, status, note); toast.success("Documento atualizado"); reload(); }
-    catch (err: any) { toast.error(err.message); }
+    catch (err) { toastError(err, "Erro a atualizar documento"); }
+    finally { setBusyId(null); }
   }
   async function viewDoc(path: string) {
-    const { data } = await supabase.storage.from("cazuba-docs").createSignedUrl(path, 120);
-    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+    try {
+      const { data, error } = await supabase.storage.from("cazuba-docs").createSignedUrl(path, 120);
+      if (error) throw error;
+      if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+    } catch (e) { toastError(e, "Não foi possível abrir o documento"); }
   }
   return (
     <div className="bg-white rounded-xl border border-border overflow-hidden">
@@ -410,8 +421,8 @@ function Documentos({ enrollments, reload }: { enrollments: Enrollment[]; reload
               <td className="p-3"><Badge value={e.document_status} /></td>
               <td className="p-3 flex gap-2 flex-wrap">
                 <button onClick={() => viewDoc(e.document_url!)} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold"><ExternalLink size={12} /> Ver</button>
-                <button onClick={() => decide(e, "aprovado")} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold"><Check size={12} /> Aprovar</button>
-                <button onClick={() => decide(e, "rejeitado")} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-600 text-white text-xs font-bold"><X size={12} /> Rejeitar</button>
+                <button onClick={() => decide(e, "aprovado")} disabled={busyId === e.id} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold disabled:opacity-50"><Check size={12} /> Aprovar</button>
+                <button onClick={() => decide(e, "rejeitado")} disabled={busyId === e.id} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-600 text-white text-xs font-bold disabled:opacity-50"><X size={12} /> Rejeitar</button>
               </td>
             </tr>
           ))}
@@ -424,9 +435,12 @@ function Documentos({ enrollments, reload }: { enrollments: Enrollment[]; reload
 
 /* ───────── CERTIFICADOS ───────── */
 function Certificados({ enrollments, certs, reload }: { enrollments: Enrollment[]; certs: Certificate[]; reload: () => void }) {
+  const [busyId, setBusyId] = useState<string | null>(null);
   async function issue(e: Enrollment) {
+    setBusyId(e.id);
     try { const c = await adminIssueCertificate(e.id); toast.success("Certificado emitido"); await downloadCertificatePdf(c); reload(); }
-    catch (err: any) { toast.error(err.message); }
+    catch (err) { toastError(err, "Erro a emitir certificado"); }
+    finally { setBusyId(null); }
   }
   const eligible = enrollments.filter(e => e.status !== "pendente" && !certs.find(c => c.enrollment_id === e.id));
   return (
@@ -440,7 +454,7 @@ function Certificados({ enrollments, certs, reload }: { enrollments: Enrollment[
               <tr key={e.id} className="border-t border-border">
                 <td className="p-3 font-semibold">{e.full_name}</td>
                 <td className="p-3">{e.course}</td>
-                <td className="p-3"><button onClick={() => issue(e)} className="px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-bold">Emitir Certificado</button></td>
+                <td className="p-3"><button onClick={() => issue(e)} disabled={busyId === e.id} className="px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-bold disabled:opacity-50">{busyId === e.id ? "A emitir..." : "Emitir Certificado"}</button></td>
               </tr>
             ))}
             {eligible.length === 0 && <tr><td colSpan={3} className="p-8 text-center text-muted-foreground">Nenhuma inscrição elegível.</td></tr>}
