@@ -41,6 +41,7 @@ export function PageShell({ title, subtitle, children, actions }: { title: strin
           </Link>
           <nav className="flex items-center gap-2 text-sm font-semibold">
             <Link to="/" className="px-3 py-2 text-primary hover:underline">Início</Link>
+            <Link to="/validar" className="px-3 py-2 text-primary/80 hover:text-primary hover:underline">Verificar</Link>
             {!hasSession && (
               <Link to="/inscricao" className="px-3 py-2 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition">Inscrever-se</Link>
             )}

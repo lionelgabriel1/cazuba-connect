@@ -13,6 +13,7 @@ import { Route as InscricaoRouteImport } from './routes/inscricao'
 import { Route as AlunoRouteImport } from './routes/aluno'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ValidarIndexRouteImport } from './routes/validar.index'
 import { Route as ValidarIdRouteImport } from './routes/validar.$id'
 
 const InscricaoRoute = InscricaoRouteImport.update({
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ValidarIndexRoute = ValidarIndexRouteImport.update({
+  id: '/validar/',
+  path: '/validar/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ValidarIdRoute = ValidarIdRouteImport.update({
   id: '/validar/$id',
   path: '/validar/$id',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/aluno': typeof AlunoRoute
   '/inscricao': typeof InscricaoRoute
   '/validar/$id': typeof ValidarIdRoute
+  '/validar/': typeof ValidarIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/aluno': typeof AlunoRoute
   '/inscricao': typeof InscricaoRoute
   '/validar/$id': typeof ValidarIdRoute
+  '/validar': typeof ValidarIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,27 @@ export interface FileRoutesById {
   '/aluno': typeof AlunoRoute
   '/inscricao': typeof InscricaoRoute
   '/validar/$id': typeof ValidarIdRoute
+  '/validar/': typeof ValidarIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/aluno' | '/inscricao' | '/validar/$id'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/aluno'
+    | '/inscricao'
+    | '/validar/$id'
+    | '/validar/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/aluno' | '/inscricao' | '/validar/$id'
-  id: '__root__' | '/' | '/admin' | '/aluno' | '/inscricao' | '/validar/$id'
+  to: '/' | '/admin' | '/aluno' | '/inscricao' | '/validar/$id' | '/validar'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/aluno'
+    | '/inscricao'
+    | '/validar/$id'
+    | '/validar/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +99,7 @@ export interface RootRouteChildren {
   AlunoRoute: typeof AlunoRoute
   InscricaoRoute: typeof InscricaoRoute
   ValidarIdRoute: typeof ValidarIdRoute
+  ValidarIndexRoute: typeof ValidarIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,6 +132,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/validar/': {
+      id: '/validar/'
+      path: '/validar'
+      fullPath: '/validar/'
+      preLoaderRoute: typeof ValidarIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/validar/$id': {
       id: '/validar/$id'
       path: '/validar/$id'
@@ -125,6 +155,7 @@ const rootRouteChildren: RootRouteChildren = {
   AlunoRoute: AlunoRoute,
   InscricaoRoute: InscricaoRoute,
   ValidarIdRoute: ValidarIdRoute,
+  ValidarIndexRoute: ValidarIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
